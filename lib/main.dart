@@ -33,20 +33,26 @@ class HomePageState extends State<HomePage> {
         child: Text('Contenuto della pagina: $_selectedIndex'),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex, // Corretto l'accesso alla variabile
+        backgroundColor: Color(0xFFF55951),
+        currentIndex: _selectedIndex,
+        // Corretto l'accesso alla variabile
         onTap: (index) {
           setState(() {
             _selectedIndex = index; // Modifica dell'indice selezionato
           });
         },
-        items: const [
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
+            icon: Icon(
+              Icons.star,
+            ),
+            label: 'Preferiti',
           ),
         ],
       ),
