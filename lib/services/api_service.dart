@@ -1,14 +1,29 @@
+import 'dart:convert';
+
+import 'package:cocktails_app/models/cocktail.dart';
+import 'package:dio/dio.dart';
 import '../models/cocktail.dart';
 
-
 class ApiService {
-  Future<List<Cocktail>> fetchCocktails() async {
-    await Future.delayed(Duration(seconds: 1)); // Simula un ritardo
-    return List.generate(10, (index) => Cocktail.placeholder(index + 1));
-  }
+  final Dio _dio = Dio();
 
-  Future<Cocktail> fetchCocktailDetails(String id) async {
-    await Future.delayed(Duration(seconds: 1)); // Simula un ritardo
-    return Cocktail.placeholder(int.parse(id));
+  Future<List<Cocktail>> fetchCocktails() async {
+    try {
+      // URL del file su Google Drive
+      const url = 'https://drive.google.com/uc?export=download&id=1YvertaR4lc01xOLv5woc4lLedFrCjtUX';
+
+      // Effettua la richiesta GET
+      final response = await _dio.get(url);
+
+      // Verifica se la risposta è valida
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.data) as List<dynamic>;
+        return data.map((cocktail) => Cocktail.fromJson(cocktail)).toList();
+      } else {
+        throw Exception('Errore durante il caricamento dei dati: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Errore durante la richiesta: $e');
+    }
   }
 }
