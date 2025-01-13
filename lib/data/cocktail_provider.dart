@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
 import '../models/cocktail.dart';
 import '../services/api_service.dart';
 
@@ -9,20 +10,31 @@ class CocktailProvider extends ChangeNotifier {
   String _searchQuery = '';
   String? _selectedCategory;
   bool? _isAlcoholic;
+  bool _isLoading = false; // Stato di caricamento
+  String? _errorMessage; // Messaggio di errore
 
   List<Cocktail> get cocktails => _cocktails;
   List<Cocktail> get filteredCocktails => _filteredCocktails;
   String get searchQuery => _searchQuery;
   String? get selectedCategory => _selectedCategory;
   bool? get isAlcoholic => _isAlcoholic;
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
 
   Future<void> loadCocktails() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
     try {
       _cocktails = await _apiService.fetchCocktails();
       _filteredCocktails = _cocktails;
-      notifyListeners();
     } catch (e) {
-      print('Errore durante il caricamento dei cocktail: $e');
+      _errorMessage = 'Errore durante il caricamento dei cocktail: $e';
+      print(_errorMessage); // Debug: stampa l'errore
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 

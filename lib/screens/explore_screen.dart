@@ -6,8 +6,9 @@ import '../widgets/filter_panel.dart';
 import '../widgets/search_bar.dart';
 import 'detail_screen.dart';
 
-
 class ExploreScreen extends StatefulWidget {
+  const ExploreScreen({super.key});
+
   @override
   _ExploreScreenState createState() => _ExploreScreenState();
 }
@@ -19,6 +20,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
   String _searchQuery = '';
   String? _selectedCategory;
   bool? _isAlcoholic;
+  bool _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -27,11 +30,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Future<void> _loadCocktails() async {
-    final cocktails = await _apiService.fetchCocktails();
-    setState(() {
-      _cocktails = cocktails;
-      _filteredCocktails = cocktails;
-    });
+    try {
+      final cocktails = await _apiService.fetchCocktails(); // Effettua la chiamata API
+      setState(() {
+        _cocktails = cocktails;
+        _filteredCocktails = cocktails;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Errore durante il caricamento dei cocktail: $e';
+        _isLoading = false;
+      });
+    }
   }
 
   void _applyFilters() {
@@ -82,8 +93,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
             },
           ),
           Expanded(
-            child: _filteredCocktails.isEmpty
-                ? Center(child: Text('Nessun risultato trovato.'))
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator()) // Mostra il caricamento
+                : _errorMessage != null
+                ? Center(child: Text(_errorMessage!)) // Mostra l'errore
+                : _filteredCocktails.isEmpty
+                ? Center(child: Text('Nessun risultato trovato.')) // Nessun dato
                 : GridView.builder(
               padding: EdgeInsets.all(8),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
