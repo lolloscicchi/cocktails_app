@@ -7,20 +7,21 @@ import '../services/favorites_service.dart';
 class DetailScreen extends StatefulWidget {
   final String cocktailId;
 
-  DetailScreen({required this.cocktailId});
+  const DetailScreen({required this.cocktailId, super.key});
 
   @override
   _DetailScreenState createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  late Future<Cocktail> _cocktailFuture;
   final ApiService _apiService = ApiService();
+  late Future<Cocktail> _cocktailFuture;
+  bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
-    _cocktailFuture = _apiService.fetchCocktailDetails(widget.cocktailId);
+    _cocktailFuture = _apiService.fetchCocktailDetails(widget.cocktailId); // Recupera i dettagli
   }
 
   @override
@@ -35,13 +36,15 @@ class _DetailScreenState extends State<DetailScreen> {
         future: _cocktailFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator()); // Mostra il caricamento
           } else if (snapshot.hasError) {
-            return Center(child: Text('Errore nel caricamento dei dettagli.'));
+            return Center(child: Text('Errore: ${snapshot.error}')); // Mostra l'errore
           } else if (!snapshot.hasData) {
-            return Center(child: Text('Nessun dato trovato.'));
+            return Center(child: Text('Nessun dato trovato.')); // Nessun dato
           } else {
             final cocktail = snapshot.data!;
+            _isFavorite = favoritesService.favorites.any((c) => c.id == cocktail.id);
+
             return SingleChildScrollView(
               padding: EdgeInsets.all(16),
               child: Column(
@@ -56,24 +59,25 @@ class _DetailScreenState extends State<DetailScreen> {
                   Text(cocktail.isAlcoholic ? 'Alcolico' : 'Analcolico'),
                   SizedBox(height: 16),
                   Text('Ingredienti:', style: Theme.of(context).textTheme.titleMedium),
-                  ..._buildIngredientsList(cocktail),
+                  ..._buildIngredientsList(cocktail), // Mostra gli ingredienti
                   SizedBox(height: 16),
                   Text('Istruzioni:', style: Theme.of(context).textTheme.titleMedium),
-                  Text(cocktail.strInstructionsIT ?? cocktail.strInstructions),
+                  Text(cocktail.strInstructionsIT ?? cocktail.strInstructions ?? 'Nessuna istruzione disponibile.'),
                   SizedBox(height: 16),
                   Center(
                     child: ElevatedButton(
                       onPressed: () async {
-                        if (favoritesService.favorites.any((c) => c.id == cocktail.id)) {
+                        if (_isFavorite) {
                           await favoritesService.removeFavorite(cocktail);
                         } else {
                           await favoritesService.addFavorite(cocktail);
                         }
+                        setState(() {
+                          _isFavorite = !_isFavorite; // Aggiorna lo stato del preferito
+                        });
                       },
                       child: Text(
-                        favoritesService.favorites.any((c) => c.id == cocktail.id)
-                            ? 'Rimuovi dai preferiti'
-                            : 'Aggiungi ai preferiti',
+                        _isFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti',
                       ),
                     ),
                   ),
@@ -86,14 +90,33 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
+  // Metodo per costruire la lista degli ingredienti
   List<Widget> _buildIngredientsList(Cocktail cocktail) {
     final ingredients = <Widget>[];
-    for (var i = 1; i <= 15; i++) {
-      final ingredient = cocktail.toJson()['strIngredient$i'];
-      if (ingredient != null) {
+    final ingredientFields = [
+      cocktail.strIngredient1,
+      cocktail.strIngredient2,
+      cocktail.strIngredient3,
+      cocktail.strIngredient4,
+      cocktail.strIngredient5,
+      cocktail.strIngredient6,
+      cocktail.strIngredient7,
+      cocktail.strIngredient8,
+      cocktail.strIngredient9,
+      cocktail.strIngredient10,
+      cocktail.strIngredient11,
+      cocktail.strIngredient12,
+      cocktail.strIngredient13,
+      cocktail.strIngredient14,
+      cocktail.strIngredient15,
+    ];
+
+    for (final ingredient in ingredientFields) {
+      if (ingredient != null && ingredient.isNotEmpty) {
         ingredients.add(Text('- $ingredient'));
       }
     }
+
     return ingredients;
   }
 }
