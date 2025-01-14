@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../models/cocktail.dart';
 import '../services/api_service.dart';
@@ -33,16 +34,27 @@ class _DetailScreenState extends State<DetailScreen> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: primaryColor,
-        title: Text(
-          'Dettaglio',
-          style: TextStyle(
-            color: white,
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
+          backgroundColor: primaryColor,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 30,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-        ),
-      ),
+          title: Center(
+            child: Text(
+              'The Velvet Stir',
+              style: GoogleFonts.islandMoments(
+                color: white,
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )),
       body: FutureBuilder<Cocktail>(
         future: _cocktailFuture,
         builder: (context, snapshot) {
@@ -64,6 +76,50 @@ class _DetailScreenState extends State<DetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // Allinea gli elementi agli estremi
+                    children: [
+                      // Nome del cocktail
+                      Text(
+                        cocktail.name,
+                        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold ),
+                      ),
+
+                      ElevatedButton(
+                        onPressed: () async {
+                          if (_isFavorite) {
+                            await favoritesService.removeFavorite(cocktail);
+                          } else {
+                            await favoritesService.addFavorite(cocktail);
+                          }
+                          setState(() {
+                            _isFavorite =
+                            !_isFavorite; // Aggiorna lo stato del preferito
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            _isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: _isFavorite ? Colors.red : Colors.grey,
+                            size: 30,
+                          ),
+                        ),
+                      ),
+
+                      // Icona del cuore
+                    ],
+                  )),
                   // Immagine del cocktail
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
@@ -77,52 +133,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   SizedBox(height: 16),
 
                   // Nome del cocktail
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // Allinea gli elementi agli estremi
-                    children: [
-                      // Nome del cocktail
-                      Text(
-                        cocktail.name,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (_isFavorite) {
-                            await favoritesService.removeFavorite(cocktail);
-                          } else {
-                            await favoritesService.addFavorite(cocktail);
-                          }
-                          setState(() {
-                            _isFavorite =
-                                !_isFavorite; // Aggiorna lo stato del preferito
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
-                        child: Center(
-                          child:
-                            Icon(
-                              _isFavorite
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: _isFavorite ? Colors.red : Colors.grey,
-                              size: 30,
-                            ),
-                        ),
-                      ),
-
-                      // Icona del cuore
-                    ],
-                  ),
+                  
                   SizedBox(height: 8),
 
                   // Categoria e tipo (alcolico/analcolico)

@@ -19,17 +19,6 @@ class FavoritesScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: transparent,
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        title: Text(
-          'Preferiti',
-          style: TextStyle(
-            color: white,
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
       body: favoritesService.isLoaded
           ? _buildContent(favoritesService)
           : Center(child: CircularProgressIndicator()),

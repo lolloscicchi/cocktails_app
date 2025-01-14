@@ -1,3 +1,4 @@
+import 'package:cocktails_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class FilterPanel extends StatefulWidget {
@@ -16,17 +17,18 @@ class _FilterPanelState extends State<FilterPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(color: primaryColor, child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           DropdownButtonFormField<String>(
+
             value: _selectedCategory,
             items: widget.categories.map((category) {
               return DropdownMenuItem(
                 value: category,
-                child: Text(category),
+                child: Text(category,),
               );
             }).toList(),
             onChanged: (value) {
@@ -61,6 +63,6 @@ class _FilterPanelState extends State<FilterPanel> {
           ),
         ],
       ),
-    );
+    ));
   }
 }
