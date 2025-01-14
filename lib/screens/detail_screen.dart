@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/cocktail.dart';
 import '../services/api_service.dart';
 import '../services/favorites_service.dart';
+import '../theme/colors.dart';
 
 class DetailScreen extends StatefulWidget {
   final String cocktailId;
@@ -21,7 +22,8 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    _cocktailFuture = _apiService.fetchCocktailDetails(widget.cocktailId); // Recupera i dettagli
+    _cocktailFuture = _apiService
+        .fetchCocktailDetails(widget.cocktailId); // Recupera i dettagli
   }
 
   @override
@@ -29,58 +31,155 @@ class _DetailScreenState extends State<DetailScreen> {
     final favoritesService = Provider.of<FavoritesService>(context);
 
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text('Dettaglio Cocktail'),
+        backgroundColor: primaryColor,
+        title: Text(
+          'Dettaglio',
+          style: TextStyle(
+            color: white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: FutureBuilder<Cocktail>(
         future: _cocktailFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator()); // Mostra il caricamento
+            return Center(
+                child: CircularProgressIndicator()); // Mostra il caricamento
           } else if (snapshot.hasError) {
-            return Center(child: Text('Errore: ${snapshot.error}')); // Mostra l'errore
+            return Center(
+                child: Text('Errore: ${snapshot.error}')); // Mostra l'errore
           } else if (!snapshot.hasData) {
             return Center(child: Text('Nessun dato trovato.')); // Nessun dato
           } else {
             final cocktail = snapshot.data!;
-            _isFavorite = favoritesService.favorites.any((c) => c.id == cocktail.id);
+            _isFavorite =
+                favoritesService.favorites.any((c) => c.id == cocktail.id);
 
             return SingleChildScrollView(
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.network(cocktail.imageUrl, height: 200, width: double.infinity, fit: BoxFit.cover),
-                  SizedBox(height: 16),
-                  Text(cocktail.name, style: Theme.of(context).textTheme.titleLarge),
-                  SizedBox(height: 8),
-                  Text('Categoria: ${cocktail.category}'),
-                  SizedBox(height: 8),
-                  Text(cocktail.isAlcoholic ? 'Alcolico' : 'Analcolico'),
-                  SizedBox(height: 16),
-                  Text('Ingredienti:', style: Theme.of(context).textTheme.titleMedium),
-                  ..._buildIngredientsList(cocktail), // Mostra gli ingredienti
-                  SizedBox(height: 16),
-                  Text('Istruzioni:', style: Theme.of(context).textTheme.titleMedium),
-                  Text(cocktail.strInstructionsIT ?? cocktail.strInstructions ?? 'Nessuna istruzione disponibile.'),
-                  SizedBox(height: 16),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (_isFavorite) {
-                          await favoritesService.removeFavorite(cocktail);
-                        } else {
-                          await favoritesService.addFavorite(cocktail);
-                        }
-                        setState(() {
-                          _isFavorite = !_isFavorite; // Aggiorna lo stato del preferito
-                        });
-                      },
-                      child: Text(
-                        _isFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti',
-                      ),
+                  // Immagine del cocktail
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      cocktail.imageUrl,
+                      width: double.infinity,
+                      height: 200,
+                      fit: BoxFit.cover,
                     ),
                   ),
+                  SizedBox(height: 16),
+
+                  // Nome del cocktail
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // Allinea gli elementi agli estremi
+                    children: [
+                      // Nome del cocktail
+                      Text(
+                        cocktail.name,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+
+                      ElevatedButton(
+                        onPressed: () async {
+                          if (_isFavorite) {
+                            await favoritesService.removeFavorite(cocktail);
+                          } else {
+                            await favoritesService.addFavorite(cocktail);
+                          }
+                          setState(() {
+                            _isFavorite =
+                                !_isFavorite; // Aggiorna lo stato del preferito
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: Center(
+                          child:
+                            Icon(
+                              _isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: _isFavorite ? Colors.red : Colors.grey,
+                              size: 30,
+                            ),
+                        ),
+                      ),
+
+                      // Icona del cuore
+                    ],
+                  ),
+                  SizedBox(height: 8),
+
+                  // Categoria e tipo (alcolico/analcolico)
+                  Row(
+                    children: [
+                      Icon(Icons.local_bar, size: 16, color: Colors.grey),
+                      SizedBox(width: 4),
+                      Text(
+                        cocktail.category,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      Spacer(),
+                      Icon(
+                        cocktail.isAlcoholic
+                            ? Icons.local_drink
+                            : Icons.local_cafe,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        cocktail.isAlcoholic ? 'Alcolico' : 'Analcolico',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+
+                  // Ingredienti
+                  Text(
+                    'Ingredienti:',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  SizedBox(height: 8),
+                  ..._buildIngredientsList(cocktail), // Mostra gli ingredienti
+                  SizedBox(height: 16),
+
+                  // Istruzioni
+                  Text(
+                    'Istruzioni:',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    cocktail.strInstructionsIT ??
+                        cocktail.strInstructions ??
+                        'Nessuna istruzione disponibile.',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 16),
+
+                  // Bottone per aggiungere/rimuovere dai preferiti
+                  Center(),
                 ],
               ),
             );

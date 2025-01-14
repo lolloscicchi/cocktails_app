@@ -1,3 +1,4 @@
+import 'package:cocktails_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/favorites_service.dart';
@@ -17,8 +18,17 @@ class FavoritesScreen extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: transparent,
       appBar: AppBar(
-        title: Text('Preferiti'),
+        backgroundColor: primaryColor,
+        title: Text(
+          'Preferiti',
+          style: TextStyle(
+            color: white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: favoritesService.isLoaded
           ? _buildContent(favoritesService)

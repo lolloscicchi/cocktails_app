@@ -1,3 +1,4 @@
+import 'package:cocktails_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import '../models/cocktail.dart';
 import '../services/api_service.dart';
@@ -59,8 +60,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: transparent,
       appBar: AppBar(
-        title: Text('Esplora'),
+        backgroundColor: primaryColor,
+        title: Text(
+          'Esplora',
+          style: TextStyle(
+            color: white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Column(
         children: [
