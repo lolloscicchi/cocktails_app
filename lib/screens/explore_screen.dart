@@ -61,36 +61,44 @@ class _ExploreScreenState extends State<ExploreScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Esplora'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) => FilterPanel(
-                  categories: _cocktails.map((c) => c.category).toSet().toList(),
-                  onApplyFilters: (category, isAlcoholic) {
-                    setState(() {
-                      _selectedCategory = category;
-                      _isAlcoholic = isAlcoholic;
-                      _applyFilters();
-                    });
-                  },
-                ),
-              );
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
-          MySearchBar(
-            onSearch: (query) {
-              setState(() {
-                _searchQuery = query;
-                _applyFilters();
-              });
-            },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: MySearchBar(
+                    onSearch: (query) {
+                      setState(() {
+                        _searchQuery = query;
+                        _applyFilters();
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(width: 8), // Spazio tra la barra di ricerca e il tasto dei filtri
+                IconButton(
+                  icon: Icon(Icons.filter_list),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => FilterPanel(
+                        categories: _cocktails.map((c) => c.category).toSet().toList(),
+                        onApplyFilters: (category, isAlcoholic) {
+                          setState(() {
+                            _selectedCategory = category;
+                            _isAlcoholic = isAlcoholic;
+                            _applyFilters();
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: _isLoading

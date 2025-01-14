@@ -28,7 +28,6 @@ class FavoritesService extends ChangeNotifier {
 
   Future<void> loadFavorites(BuildContext context) async {
     if (_isLoaded) return;
-
     final prefs = await SharedPreferences.getInstance();
     final favoriteIds = prefs.getStringList(_favoritesKey) ?? [];
     final cocktailProvider = Provider.of<CocktailProvider>(context, listen: false);

@@ -13,7 +13,7 @@ class FavoritesScreen extends StatelessWidget {
 
     // Se i preferiti sono già caricati, non avviare di nuovo il Future
     if (!favoritesService.isLoaded) {
-      favoritesService.loadFavorites(this as BuildContext);
+      favoritesService.loadFavorites(context);
     }
 
     return Scaffold(
