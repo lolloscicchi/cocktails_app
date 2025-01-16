@@ -17,52 +17,60 @@ class _FilterPanelState extends State<FilterPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: primaryColor, child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          DropdownButtonFormField<String>(
-
-            value: _selectedCategory,
-            items: widget.categories.map((category) {
-              return DropdownMenuItem(
-                value: category,
-                child: Text(category,),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedCategory = value;
-              });
-            },
-            decoration: InputDecoration(labelText: 'Categoria'),
-          ),
-          SizedBox(height: 16),
-          DropdownButtonFormField<bool>(
-            value: _isAlcoholic,
-            items: [
-              DropdownMenuItem(value: null, child: Text('Tutti')),
-              DropdownMenuItem(value: true, child: Text('Alcolico')),
-              DropdownMenuItem(value: false, child: Text('Analcolico')),
+    return Container(
+        color: primaryColor,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                value: _selectedCategory,
+                items: widget.categories.map((category) {
+                  return DropdownMenuItem(
+                    value: category,
+                    child: Text(
+                      category,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCategory = value;
+                  });
+                },
+                decoration: InputDecoration(labelText: 'Categoria'),
+              ),
+              SizedBox(height: 16),
+              DropdownButtonFormField<bool>(
+                value: _isAlcoholic,
+                items: [
+                  DropdownMenuItem(value: null, child: Text('Tutti')),
+                  DropdownMenuItem(value: true, child: Text('Alcolico')),
+                  DropdownMenuItem(value: false, child: Text('Analcolico')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _isAlcoholic = value;
+                  });
+                },
+                decoration: InputDecoration(labelText: 'Tipo'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  widget.onApplyFilters(_selectedCategory, _isAlcoholic);
+                  Navigator.pop(context);
+                },
+                style:
+                    ElevatedButton.styleFrom(backgroundColor: secondaryColor),
+                child: const Text(
+                  'Applica Filtri',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
             ],
-            onChanged: (value) {
-              setState(() {
-                _isAlcoholic = value;
-              });
-            },
-            decoration: InputDecoration(labelText: 'Tipo'),
           ),
-          SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              widget.onApplyFilters(_selectedCategory, _isAlcoholic);
-              Navigator.pop(context);
-            },
-            child: Text('Applica Filtri'),
-          ),
-        ],
-      ),
-    ));
+        ));
   }
 }
