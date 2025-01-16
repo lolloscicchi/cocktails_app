@@ -27,7 +27,11 @@ class FavoritesScreen extends StatelessWidget {
 
   Widget _buildContent(FavoritesService favoritesService) {
     if (favoritesService.favorites.isEmpty) {
-      return Center(child: Text('Nessun cocktail nei preferiti.'));
+      return Center(
+          child: Text(
+        'Inserisci un cocktail tra i preferiti.',
+        style: TextStyle(fontSize: 25, color: secondaryColor),
+      ));
     }
 
     return GridView.builder(
