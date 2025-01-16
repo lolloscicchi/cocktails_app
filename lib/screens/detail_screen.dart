@@ -76,64 +76,66 @@ class _DetailScreenState extends State<DetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(padding: EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // Allinea gli elementi agli estremi
-                    children: [
-                      // Nome del cocktail
-                      Text(
-                        cocktail.name,
-                        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold ),
-                      ),
-
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (_isFavorite) {
-                            await favoritesService.removeFavorite(cocktail);
-                          } else {
-                            await favoritesService.addFavorite(cocktail);
-                          }
-                          setState(() {
-                            _isFavorite =
-                            !_isFavorite; // Aggiorna lo stato del preferito
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
+                  Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // Allinea gli elementi agli estremi
+                        children: [
+                          Spacer(),
+                          Text(
+                            cocktail.name,
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            _isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: _isFavorite ? Colors.red : Colors.grey,
-                            size: 30,
-                          ),
-                        ),
-                      ),
+                          Spacer(),
 
-                      // Icona del cuore
-                    ],
-                  )),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (_isFavorite) {
+                                await favoritesService.removeFavorite(cocktail);
+                              } else {
+                                await favoritesService.addFavorite(cocktail);
+                              }
+                              setState(() {
+                                _isFavorite =
+                                    !_isFavorite; // Aggiorna lo stato del preferito
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                _isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: _isFavorite ? Colors.red : Colors.grey,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+
+                          // Icona del cuore
+                        ],
+                      )),
                   // Immagine del cocktail
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
                       cocktail.imageUrl,
                       width: double.infinity,
-                      height: 200,
                       fit: BoxFit.cover,
                     ),
                   ),
                   SizedBox(height: 16),
 
                   // Nome del cocktail
-                  
+
                   SizedBox(height: 8),
 
                   // Categoria e tipo (alcolico/analcolico)
