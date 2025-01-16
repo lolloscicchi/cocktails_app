@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../data/cocktail_provider.dart';
 import '../models/cocktail.dart';
 
 class FavoritesService extends ChangeNotifier {
@@ -30,26 +29,8 @@ class FavoritesService extends ChangeNotifier {
     if (_isLoaded) return;
     final prefs = await SharedPreferences.getInstance();
     final favoriteIds = prefs.getStringList(_favoritesKey) ?? [];
-    final cocktailProvider = Provider.of<CocktailProvider>(context, listen: false);
 
     _favorites = [];
-    for (final id in favoriteIds) {
-      // Cerca il cocktail nel provider
-      final cocktail = cocktailProvider.cocktails.firstWhere(
-            (c) => c.id == id,
-        orElse: () => Cocktail(
-          id: '',
-          name: 'Cocktail non trovato',
-          imageUrl: '',
-          category: '',
-          isAlcoholic: false,
-          strInstructions: '',
-        ),
-      );
-      if (cocktail.id.isNotEmpty) {
-        _favorites.add(cocktail);
-      }
-    }
 
     _isLoaded = true;
     notifyListeners();
