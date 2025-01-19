@@ -19,6 +19,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   List<Cocktail> _cocktails = [];
   List<Cocktail> _filteredCocktails = [];
   String _searchQuery = '';
+  final TextEditingController _controller = TextEditingController();
   String? _selectedCategory;
   bool? _isAlcoholic;
   bool _isLoading = true;
@@ -67,44 +68,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
       backgroundColor: transparent,
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: MySearchBar(
-                    onSearch: (query) {
-                      setState(() {
-                        _searchQuery = query;
-                        _applyFilters();
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(width: 8),
-                // Spazio tra la barra di ricerca e il tasto dei filtri
-                IconButton(
-                  icon: Icon(Icons.filter_list),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) => FilterPanel(
-                        categories:
-                            _cocktails.map((c) => c.category).toSet().toList(),
-                        onApplyFilters: (category, isAlcoholic) {
-                          setState(() {
-                            _selectedCategory = category;
-                            _isAlcoholic = isAlcoholic;
-                            _applyFilters();
-                          });
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
           Expanded(
             child: _isLoading
                 ? Center(
@@ -141,6 +104,51 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               );
                             },
                           ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: MySearchBar(
+                    onSearch: (query) {
+                      setState(() {
+                        _searchQuery = query;
+                        _applyFilters();
+                      });
+                    },
+                    onClear: () {
+                      setState(() {
+                        _searchQuery = '';
+                        _applyFilters();
+                      });
+                    },
+                    controller: _controller,
+                  ),
+                ),
+                SizedBox(width: 8),
+                // Spazio tra la barra di ricerca e il tasto dei filtri
+                IconButton(
+                  icon: Icon(Icons.filter_list),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => FilterPanel(
+                        categories:
+                            _cocktails.map((c) => c.category).toSet().toList(),
+                        onApplyFilters: (category, isAlcoholic) {
+                          setState(() {
+                            _selectedCategory = category;
+                            _isAlcoholic = isAlcoholic;
+                            _applyFilters();
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),
