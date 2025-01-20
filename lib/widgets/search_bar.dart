@@ -16,13 +16,14 @@ class MySearchBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextField(
+        controller: controller,
         decoration: InputDecoration(
           hintText: 'Cerca cocktail...',
           prefixIcon: Icon(Icons.search),
           suffixIcon: IconButton(
             icon: Icon(Icons.clear),
             onPressed: () {
-              controller.clearComposing();
+              controller.clear();
               onClear();
             },
           ),

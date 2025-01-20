@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cocktails_app/models/cocktail.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../models/cocktail.dart';
@@ -17,7 +16,7 @@ class ApiService {
         List<dynamic> data = jsonDecode(response.data) as List<dynamic>;
         if (kDebugMode) {
           print('Dati ricevuti: $data');
-        } // Debug: stampa i dati ricevuti
+        }
         return data.map((cocktail) => Cocktail.fromJson(cocktail)).toList();
       } else {
         throw Exception('Errore durante il caricamento dei dati: ${response.statusCode}');
@@ -25,7 +24,7 @@ class ApiService {
     } catch (e) {
       if (kDebugMode) {
         print('Errore durante la richiesta: $e');
-      } // Debug: stampa l'errore
+      }
       throw Exception('Errore durante la richiesta: $e');
     }
   }
@@ -40,7 +39,6 @@ class ApiService {
           print('Dettagli cocktail ricevuti: $drinks');
         }
 
-        // Estrai il cocktail dalla risposta
         if (drinks.isNotEmpty) {
           return Cocktail.fromJson(drinks[0]);
         } else {

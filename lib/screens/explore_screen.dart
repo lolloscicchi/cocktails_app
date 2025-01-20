@@ -33,8 +33,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   Future<void> _loadCocktails() async {
     try {
-      final cocktails =
-          await _apiService.fetchCocktails(); // Effettua la chiamata API
+      final cocktails = await _apiService.fetchCocktails();
       setState(() {
         _cocktails = cocktails;
         _filteredCocktails = cocktails;
@@ -70,14 +69,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
         children: [
           Expanded(
             child: _isLoading
-                ? Center(
-                    child: CircularProgressIndicator()) // Mostra il caricamento
+                ? Center(child: CircularProgressIndicator())
                 : _errorMessage != null
-                    ? Center(child: Text(_errorMessage!)) // Mostra l'errore
+                    ? Center(child: Text(_errorMessage!))
                     : _filteredCocktails.isEmpty
-                        ? Center(
-                            child: Text(
-                                'Nessun risultato trovato.')) // Nessun dato
+                        ? Center(child: Text('Nessun risultato trovato.'))
                         : GridView.builder(
                             padding: EdgeInsets.all(8),
                             gridDelegate:
